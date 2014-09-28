@@ -1,0 +1,7 @@
+parameters:
+#    xaj_user.example.class: Xaj\UserBundle\Example
+
+services:
+#    xaj_user.example:
+#        class: %xaj_user.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
