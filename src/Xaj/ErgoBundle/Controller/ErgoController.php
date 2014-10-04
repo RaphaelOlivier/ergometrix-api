@@ -133,6 +133,23 @@ class ErgoController extends FOSRestController
     }
 
     /**
+     * @Post("/boats/softremove/{boat}")
+     * @ParamConverter("boat", class="Xaj\ErgoBundle\Entity\Boat", options={"id" = "boat"})
+     * @View()
+     */
+    public function softremoveBoatAction(Boat $boat)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $boat->setDeleted(true);
+
+        $em->persist($boat);
+        $em->flush();
+
+        return $boat;
+    }
+
+    /**
      * @Get("/boats/count")
      * @View()
      */
