@@ -52,6 +52,13 @@ class Boat
     private $payment;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="deleted", type="boolean")
+     */
+    private $deleted;
+
+    /**
      * @var  boolean
      *
      * @ORM\Column(name="valid", type="boolean")
@@ -67,6 +74,8 @@ class Boat
      * @ORM\OneToOne(targetEntity="Xaj\ErgoBundle\Entity\Leader", mappedBy="boat", orphanRemoval=true)
      */
     private $leader;
+
+
 
 
     /**
@@ -232,5 +241,28 @@ class Boat
     public function getLeader()
     {
         return $this->leader;
+    }
+
+    /**
+     * Set valid
+     *
+     * @param boolean $valid
+     * @return Boat
+     */
+    public function setValid($valid)
+    {
+        $this->valid = $valid;
+
+        return $this;
+    }
+
+    /**
+     * Get valid
+     *
+     * @return boolean 
+     */
+    public function getValid()
+    {
+        return $this->valid;
     }
 }
