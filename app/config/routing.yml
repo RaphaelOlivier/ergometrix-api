@@ -4,6 +4,10 @@ xaj_ergo:
     type: rest
     resource: Xaj\ErgoBundle\Controller\ErgoController
 
+xaj_auth:
+    type: rest
+    resource: Xaj\ErgoBundle\Controller\AuthController
+
 xaj_ergo_static:
     resource: "@XajErgoBundle/Resources/config/routing.yml"
 

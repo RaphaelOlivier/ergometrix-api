@@ -24,8 +24,7 @@ class AppKernel extends Kernel
             new Hautelook\TemplatedUriBundle\HautelookTemplatedUriBundle(),
             new Bazinga\Bundle\RestExtraBundle\BazingaRestExtraBundle(),
             new Xaj\ErgoBundle\XajErgoBundle(),
-            // new FOS\UserBundle\FOSUserBundle(),
-            // new Xaj\UserBundle\XajUserBundle(),
+            new Lexik\Bundle\JWTAuthenticationBundle\LexikJWTAuthenticationBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

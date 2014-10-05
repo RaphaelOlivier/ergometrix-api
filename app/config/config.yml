@@ -83,10 +83,11 @@ fos_rest:
     routing_loader:
         default_format: json
 
-# fos_user:
-#     db_driver: orm
-#     firewall_name: main
-#     user_class: Xaj\UserBundle\Entity\User
+lexik_jwt_authentication:
+    private_key_path: %kernel.root_dir%/var/jwt/private.pem   # ssh private key path
+    public_key_path:  %kernel.root_dir%/var/jwt/public.pem    # ssh public key path
+    pass_phrase:      'RamerEnSectionAvironX13cestlepied'     # ssh key pass phrase
+    token_ttl:        86400                                   # token ttl - defaults to 86400
 
 fos_http_cache:
     cache_control:

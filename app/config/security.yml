@@ -1,61 +1,33 @@
 # app/config/security.yml
 
-# security:
-#     encoders:
-#         Xaj\UserBundle\Entity\User: sha512
+security:
+    encoders:
+        Xaj\ErgoBundle\Entity\User: plaintext
+            # algorithm: bcrypt
 
-#     role_hierarchy:
-#         ROLE_ADMIN:       ROLE_USER
-#         ROLE_SUPER_ADMIN: [ROLE_USER, ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
+    role_hierarchy:
+        ROLE_ADMIN:       ROLE_USER
+        ROLE_SUPER_ADMIN: [ ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH ]
 
-#     providers:
-#         main:
-#             id: fos_user.user_provider.username
+    providers:
+        users:
+            entity: { class: XajErgoBundle:User, property: login }
 
-#     firewalls:
-#         dev:
-#             pattern:  ^/
-#             anonymous: true
+    firewalls:
+        main:
+            pattern:    ^/
+            stateless:  true
+            anonymous:  true
+            lexik_jwt:
+                create_entry_point: true
+                authorization_header:
+                    enabled: true
+                    prefix:  Bearer
+                query_parameter:
+                    enabled: true
+                    name:    bearer
 
-#         admin:
-#             pattern: ^/admin
-#             anonymous: true
-#             provider: main
-#             form_login: 
-#                 login_path: fos_user_security_login
-#                 check_path: fos_user_security_check
-#             logout:
-#                 path: fos_user_security_logout
-#                 target: /
-#             remember_me:
-#                 key: %secret%
-
-#     access_control:
-#         #- { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https }
-
-# security:
-#     encoders:
-#         FOS\UserBundle\Model\UserInterface: sha512
-
-#     role_hierarchy:
-#         ROLE_ADMIN:       ROLE_USER
-#         ROLE_SUPER_ADMIN: ROLE_ADMIN
-
-#     providers:
-#         fos_userbundle:
-#             id: fos_user.user_provider.username
-
-#     firewalls:
-#         main:
-#             pattern: ^/
-#             form_login:
-#                 provider: fos_userbundle
-#                 csrf_provider: form.csrf_provider
-#             logout:       true
-#             anonymous:    true
-
-#     access_control:
-#         - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
-#         - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
-#         - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
-#         - { path: ^/admin/, role: ROLE_ADMIN }
+    # access_control:
+    #     - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+    #     - { path: ^/admin,       roles: IS_AUTHENTICATED_FULLY }
+    #     - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
