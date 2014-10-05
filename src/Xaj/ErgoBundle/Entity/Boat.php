@@ -75,6 +75,19 @@ class Boat
      */
     private $leader;
 
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->record = 0;
+        $this->payment = false;
+        $this->deleted = false;
+        $this->valid = false;
+        $this->rowers = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+
 
 
 
@@ -178,13 +191,6 @@ class Boat
     public function getPayment()
     {
         return $this->payment;
-    }
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->rowers = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
