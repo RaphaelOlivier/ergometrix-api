@@ -26,7 +26,7 @@ class ErgoController extends FOSRestController
     public function getBoatsAction()
     {
         $em = $this->getDoctrine()->getManager();
-        $boats = $em->getRepository('XajErgoBundle:Boat')->findAll();
+        $boats = $em->getRepository('XajErgoBundle:Boat')->getBoatsNotDeleted();
 
         return $boats;
     }
@@ -72,6 +72,8 @@ class ErgoController extends FOSRestController
      * @Post("/boats/valid/{boat}")
      * @ParamConverter("boat", class="Xaj\ErgoBundle\Entity\Boat", options={"id" = "boat"})
      * @View()
+     *
+     * @Security("has_role('ROLE_USER')")
      */
     public function validBoatAction(Boat $boat)
     {
