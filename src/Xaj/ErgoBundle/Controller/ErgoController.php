@@ -136,6 +136,26 @@ class ErgoController extends FOSRestController
     }
 
     /**
+     * @Post("/boats/{boat}")
+     * @ParamConverter("boat", class="Xaj\ErgoBundle\Entity\Boat", options={"id" = "boat"})
+     * @RequestParam(name="name")
+     * @View()
+     */
+    public function editBoatAction(Boat $boat, $name = '')
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        if ($name != '') {
+            $boat->setName($name);
+        }
+
+        $em->persist($boat);
+        $em->flush();
+
+        return $boat;
+    }
+
+    /**
      * @Delete("/boats/{boat}")
      * @ParamConverter("boat", class="Xaj\ErgoBundle\Entity\Boat", options={"id" = "boat"})
      * @View()
@@ -226,6 +246,29 @@ class ErgoController extends FOSRestController
     }
 
     /**
+     * @Post("/rowers/{rower}")
+     * @ParamConverter("rower", class="Xaj\ErgoBundle\Entity\Rower", options={"id" = "rower"})
+     * @RequestParam(name="lastname")
+     * @RequestParam(name="firstname")
+     */
+    public function editRowerAction(Rower $rower, $lastname = '', $firstname = '')
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        if ($lastname != '') {
+            $rower->setLastname($lastname);
+        }
+        if ($firstname != '') {
+            $rower->setFirstname($firstname);
+        }
+
+        $em->persist($rower);
+        $em->flush();
+
+        return $rower;
+    }
+
+    /**
      * @Delete("/rowers/{rower}")
      * @ParamConverter("rower", class="Xaj\ErgoBundle\Entity\Rower", options={"id" = "rower"})
      * @View()
@@ -259,6 +302,38 @@ class ErgoController extends FOSRestController
         $leader->setEmail($email);
         $leader->setPhone($phone);
         $leader->setClub($club);
+
+        $em->persist($leader);
+        $em->flush();
+
+        return $leader;
+    }
+
+    /**
+     * @Post("/leaders/{leader}")
+     * @ParamConverter("leader", class="Xaj\ErgoBundle\Entity\Leader", options={"id" = "leader"})
+     * @RequestParam(name="email")
+     * @RequestParam(name="phone")
+     * @RequestParam(name="club")
+     * @RequestParam(name="lastname")
+     * @RequestParam(name="firstname")
+     */
+    public function editLeaderAction(Leader $leader, $email = '', $phone = '', $club = '', $lastname = '', $firstname = '')
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        if ($lastname != '' || $firstname != '') {
+            editRowerAction($leader->getRower(), $lastname, $firstname);
+        }
+        if ($email != '') {
+            $leader->setEmail($email);
+        }
+        if ($phone != '') {
+            $leader->setPhone($phone);
+        }
+        if ($club != '') {
+            $leader->setClub($club);
+        }
 
         $em->persist($leader);
         $em->flush();
