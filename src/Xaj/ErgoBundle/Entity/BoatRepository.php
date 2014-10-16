@@ -28,6 +28,19 @@ class BoatRepository extends EntityRepository
     /**
      * 
      */
+    public function getDeletedBoats()
+    {
+        $qb = $this->createQueryBuilder('b')
+                ->select('b')
+                ->where('b.deleted = 1')
+                ->orderBy('b.category', 'ASC');
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * 
+     */
     public function countTotal()
     {
         return $this->createQueryBuilder('b')
