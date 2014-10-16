@@ -42,6 +42,17 @@ class Rower
      */
     private $boat;
 
+    /**
+     * @var date
+     * @ORM\Column(name="birthdate", type="date", nullable=true)
+     */
+    private $birthdate;
+
+    /**
+     * @ORM\Column(name="license", type="string", length=255, nullable=true)
+     */
+    private $license;
+
 
     public function __construct(Boat $boat)
     {
@@ -126,5 +137,51 @@ class Rower
     public function getBoat()
     {
         return $this->boat;
+    }
+
+    /**
+     * Set birthdate
+     *
+     * @param \DateTime $birthdate
+     * @return Rower
+     */
+    public function setBirthdate($birthdate)
+    {
+        $this->birthdate = $birthdate;
+
+        return $this;
+    }
+
+    /**
+     * Get birthdate
+     *
+     * @return \DateTime 
+     */
+    public function getBirthdate()
+    {
+        return $this->birthdate;
+    }
+
+    /**
+     * Set license
+     *
+     * @param string $license
+     * @return Rower
+     */
+    public function setLicense($license)
+    {
+        $this->license = $license;
+
+        return $this;
+    }
+
+    /**
+     * Get license
+     *
+     * @return string 
+     */
+    public function getLicense()
+    {
+        return $this->license;
     }
 }

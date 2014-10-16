@@ -42,6 +42,17 @@ class Rower
      */
     private $boat;
 
+    /**
+     * @var date
+     * @ORM\Column(name="birthdate", type="date", nullable=true)
+     */
+    private $birthdate;
+
+    /**
+     * @ORM\Column(name="license", type="string", length=255, nullable=true)
+     */
+    private $license;
+
 
     public function __construct(Boat $boat)
     {
