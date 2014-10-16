@@ -2,8 +2,11 @@
 
 security:
     encoders:
-        Xaj\ErgoBundle\Entity\User: plaintext
-            # algorithm: bcrypt
+        Xaj\ErgoBundle\Entity\User: 
+            algorithm: pbkdf2
+            hash_algorithm: sha512
+            encode_as_base64: true
+            iterations: 1000
 
     role_hierarchy:
         ROLE_ADMIN:       ROLE_USER

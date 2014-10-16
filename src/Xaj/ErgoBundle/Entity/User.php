@@ -3,6 +3,8 @@
 namespace Xaj\ErgoBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * User
@@ -10,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table()
  * @ORM\Entity(repositoryClass="Xaj\ErgoBundle\Entity\UserRepository")
  */
-class User
+class User implements UserInterface
 {
     /**
      * @var integer
@@ -24,7 +26,7 @@ class User
     /**
      * @var string
      *
-     * @ORM\Column(name="login", type="string", length=255)
+     * @ORM\Column(name="login", type="string", length=255, unique=true)
      */
     private $login;
 
@@ -55,6 +57,19 @@ class User
      * @ORM\Column(name="firstname", type="string", length=255)
      */
     private $firstname;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="salt", type="string", length=255)
+     */
+    private $salt;
+
+
+    public function __construct()
+    {
+        $this->salt = uniqid();
+    }
 
 
     /**
@@ -172,6 +187,16 @@ class User
         return $this;
     }
 
+    public function getRoles()
+    {
+        return array('ROLE_USER');
+    }
+
+    public function getUsername()
+    {
+        return $this->login;
+    }
+
     /**
      * Get firstname
      *
@@ -184,6 +209,41 @@ class User
 
     public function getSalt()
     {
-        return null;
+        return $this->salt;
+    }
+
+    public function eraseCredentials()
+    {
+    }
+
+    public function serialize()
+    {
+        return serialize(array(
+            $this->id,
+            $this->login,
+            $this->password
+        ));
+    }
+
+    public function unserialize($serialized)
+    {
+        list (
+            $this->id,
+            $this->login,
+            $this->password
+        ) = unserialize($serialized);
+    }
+
+    /**
+     * Set salt
+     *
+     * @param string $salt
+     * @return User
+     */
+    public function setSalt($salt)
+    {
+        $this->salt = $salt;
+
+        return $this;
     }
 }

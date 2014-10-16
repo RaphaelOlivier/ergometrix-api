@@ -14,14 +14,13 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Xaj\ErgoBundle\Entity\Boat;
 use Xaj\ErgoBundle\Entity\Rower;
 use Xaj\ErgoBundle\Entity\Leader;
+use Xaj\ErgoBundle\Entity\User;
 
 class ErgoController extends FOSRestController
 {
     /**
      * @Get("/boats")
      * @View()
-     *
-     * 
      */
     public function getBoatsAction()
     {
@@ -32,11 +31,23 @@ class ErgoController extends FOSRestController
     }
 
     /**
+     * @Get("/boats/deleted")
+     * @View()
+     *
+     * @Security("has_role('ROLE_USER')")
+     */
+    public function getDeletedBoatsAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $boats = $em->getRepository('XajErgoBundle:Boat')->getDeletedBoats();
+
+        return $boats;
+    }
+
+    /**
      * @Get("/boats/{boat}")
      * @ParamConverter("boat", class="Xaj\ErgoBundle\Entity\Boat", options={"id" = "boat"})
      * @View()
-     *
-     * 
      */
     public function getBoatAction(Boat $boat)
     {
@@ -48,8 +59,6 @@ class ErgoController extends FOSRestController
      * @RequestParam(name="name")
      * @RequestParam(name="category")
      * @View()
-     *
-     * 
      */
     public function addBoatAction($name, $category, $record = 0, $payment = false, $valid = false)
     {
@@ -91,6 +100,8 @@ class ErgoController extends FOSRestController
      * @Post("/boats/pay/{boat}")
      * @ParamConverter("boat", class="Xaj\ErgoBundle\Entity\Boat", options={"id" = "boat"})
      * @View()
+     *
+     * @Security("has_role('ROLE_USER')")
      */
     public function payBoatAction(Boat $boat)
     {
@@ -109,6 +120,8 @@ class ErgoController extends FOSRestController
      * @ParamConverter("boat", class="Xaj\ErgoBundle\Entity\Boat", options={"id" = "boat"})
      * @RequestParam(name="temps")
      * @View()
+     *
+     * @Security("has_role('ROLE_USER')")
      */
     public function recordBoatAction(Boat $boat, $temps)
     {
@@ -126,6 +139,8 @@ class ErgoController extends FOSRestController
      * @Delete("/boats/{boat}")
      * @ParamConverter("boat", class="Xaj\ErgoBundle\Entity\Boat", options={"id" = "boat"})
      * @View()
+     *
+     * @Security("has_role('ROLE_USER')")
      */
     public function removeBoatAction(Boat $boat)
     {
@@ -154,6 +169,8 @@ class ErgoController extends FOSRestController
     /**
      * @Get("/boats/count")
      * @View()
+     *
+     * @Security("has_role('ROLE_USER')")
      */
     public function countBoatsAction()
     {
@@ -167,8 +184,6 @@ class ErgoController extends FOSRestController
     /**
      * @Get("/rowers")
      * @View()
-     *
-     * 
      */
     public function getRowersAction()
     {
@@ -182,8 +197,6 @@ class ErgoController extends FOSRestController
      * @Get("/rowers/{rower}")
      * @ParamConverter("rower", class="Xaj\ErgoBundle\Entity\Rower", options={"id" = "rower"})
      * @View()
-     *
-     * 
      */
     public function getRowerAction(Rower $rower)
     {
@@ -197,8 +210,6 @@ class ErgoController extends FOSRestController
      * @RequestParam(name="boat")
      * @ParamConverter("boat", class="Xaj\ErgoBundle\Entity\Boat", options={"id" = "boat"})
      * @View()
-     *
-     * 
      */
     public function addRowerAction($lastname, $firstname, Boat $boat)
     {
@@ -218,6 +229,8 @@ class ErgoController extends FOSRestController
      * @Delete("/rowers/{rower}")
      * @ParamConverter("rower", class="Xaj\ErgoBundle\Entity\Rower", options={"id" = "rower"})
      * @View()
+     *
+     * @Security("has_role('ROLE_USER')")
      */
     public function removeRowerAction(Rower $rower)
     {
@@ -251,6 +264,112 @@ class ErgoController extends FOSRestController
         $em->flush();
 
         return $leader;
+    }
+
+    /**
+     * @Post("/boats/email/{boat}")
+     * @ParamConverter("boat", class="Xaj\ErgoBundle\Entity\Boat", options={"id" = "boat"})
+     * @View()
+     */
+    public function sendRecapMailAction(Boat $boat)
+    {
+        $message = \Swift_Message::newInstance()
+                ->setSubject('Confirmation de votre inscription à ErgometriX 2014')
+                ->setFrom('andre.gourdon@polytechnique.edu')
+                ->setTo($boat->getLeader()->getEmail())
+                ->setBody(
+                    $this->renderView('XajErgoBundle:Boat:email.html.twig')
+                    )
+                ;
+        $this->get('mailer')->send($message);
+
+        return $message->getBody();
+    }
+
+    /**
+     * @Get("/users")
+     * @View()
+     *
+     * @Security("has_role('ROLE_USER')")
+     */
+    public function getUsersAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $users = $em->getRepository('XajErgoBundle:User')->findAll();
+
+        return $users;
+    }
+
+    /**
+     * @Get("/users/{user}")
+     * @ParamConverter("user", class="Xaj\ErgoBundle\Entity\User", options={"id" = "user"})
+     * @View()
+     *
+     * @Security("has_role('ROLE_USER')")
+     */
+    public function getUserAction(User $user)
+    {
+        return $user;
+    }
+
+    /**
+     * @Post("/users/add")
+     * @RequestParam(name="lastname")
+     * @RequestParam(name="firstname")
+     * @RequestParam(name="login")
+     * @RequestParam(name="password")
+     * @RequestParam(name="email")
+     *
+     * @View()
+     *
+     * @Security("has_role('ROLE_USER')")
+     */
+    public function addUserAction($lastname, $firstname, $login, $email, $password)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $user = new User();
+        $encoder = $this->get('security.encoder_factory')->getEncoder($user);
+
+        $user->setLastname($lastname);
+        $user->setFirstname($firstname);
+        $user->setLogin($login);
+        $user->setEmail($email);
+        $pwd = $encoder->encodePassword($password, $user->getSalt());
+        $user->setPassword($pwd);
+
+        $em->persist($user);
+        $em->flush();
+
+        $user->setPassword('');
+        $user->setSalt('');
+
+        return $user;
+    }
+
+    /**
+     * @Delete("/users/{user}")
+     * @ParamConverter("user", class="Xaj\ErgoBundle\Entity\User", options={"id" = "user"})
+     * @View()
+     *
+     * @Security("has_role('ROLE_USER')")
+     */
+    public function removeUserAction(User $user)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($user);
+        $em->flush();
+    }
+
+    /**
+     * @Post("/users/{user}/changepwd")
+     * @ParamConverter("user", class="Xaj\ErgoBundle\Entity\User", options={"id" = "user"})
+     * @View()
+     *
+     * @Security("has_role('ROLE_USER')")
+     */
+    public function changePwdAction(User $user, $oldpwd, $newpwd)
+    {
+        $em = $this->getDoctrine()->getManager();
     }
 }
 ?>
