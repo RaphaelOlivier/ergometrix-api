@@ -12,6 +12,8 @@ use FOS\RestBundle\Controller\Annotations\View;
 use FOS\RestBundle\Controller\Annotations\RequestParam;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
+use Xaj\ErgoBundle\Entity\User;
+
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class AuthController extends FOSRestController {
@@ -54,10 +56,13 @@ class AuthController extends FOSRestController {
 
         $payload = array(
                 'exp' => time() + $this->container->getParameter('lexik_jwt_authentication.token_ttl'),
-                'username' => strtoupper($user->getLastname()).' '.$user->getFirstname()
+                'username' => $user->getLogin()
             );
 
         $jwt = $this->get('lexik_jwt_authentication.jwt_encoder')->encode($payload);
+        
+        $user->setPassword('');
+        $user->setSalt('');
 
         return array('token' => $jwt, 'url_safe_token' => urlencode($jwt), 'user' => $user);
     }
