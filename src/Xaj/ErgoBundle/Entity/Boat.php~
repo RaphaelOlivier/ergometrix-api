@@ -75,6 +75,19 @@ class Boat
      */
     private $leader;
 
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->record = 0;
+        $this->payment = false;
+        $this->deleted = false;
+        $this->valid = false;
+        $this->rowers = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+
 
 
 
@@ -179,13 +192,6 @@ class Boat
     {
         return $this->payment;
     }
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->rowers = new \Doctrine\Common\Collections\ArrayCollection();
-    }
 
     /**
      * Add rowers
@@ -264,5 +270,28 @@ class Boat
     public function getValid()
     {
         return $this->valid;
+    }
+
+    /**
+     * Set deleted
+     *
+     * @param boolean $deleted
+     * @return Boat
+     */
+    public function setDeleted($deleted)
+    {
+        $this->deleted = $deleted;
+
+        return $this;
+    }
+
+    /**
+     * Get deleted
+     *
+     * @return boolean 
+     */
+    public function getDeleted()
+    {
+        return $this->deleted;
     }
 }
